@@ -55,7 +55,8 @@ def main(args):
     train_dataset = torchvision.datasets.CIFAR10(
             root=args.data_dir,
             train=True,
-            transform=transform)
+            transform=transform,
+            download=True)
 
     sampler_train = None
     if world_size > 1:
