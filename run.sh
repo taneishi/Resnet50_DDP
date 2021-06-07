@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=1
+#PBS -l nodes=4:gold6128:ppn=1
 #PBS -N resnet_mpi
 #PBS -j oe
 #PBS -o output_${PBS_NUM_NODES}.log
