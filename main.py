@@ -58,8 +58,6 @@ def main(args):
             transform=transform,
             download=True)
 
-    train_dataset  = torch.utils.data.Subset(train_dataset, range(100))
-
     sampler_train = None
     if world_size > 1:
         sampler_train = torch.utils.data.distributed.DistributedSampler(train_dataset)
