@@ -57,6 +57,7 @@ def main(args):
             train=True,
             transform=transform,
             download=True)
+    train_dataset = torch.utils.data.Subset(train_dataset, range(100))
 
     sampler_train = None
     if world_size > 1:
@@ -71,6 +72,7 @@ def main(args):
             root=args.data_dir,
             train=False,
             transform=transform)
+    test_dataset = torch.utils.data.Subset(test_dataset, range(100))
 
     sampler_test = None
     if world_size > 1:

@@ -7,8 +7,11 @@
 cd ${PBS_O_WORKDIR}
 mkdir -p tmp
 
-mpirun -machinefile ${PBS_NODEFILE} /opt/intel/oneapi/pytorch/1.7.0/bin/python main.py \
-    --epochs 2 \
+#PYTHON=/opt/intel/oneapi/pytorch/1.7.0/bin/python 
+PYTHON=${HOME}/anaconda3/envs/torch/bin/python
+
+mpirun -machinefile ${PBS_NODEFILE} ${PYTHON} main.py \
+    --epochs 5 \
     --tmpname ${PBS_O_WORKDIR}/tmp/${PBS_JOBID} \
     --env_size PMI_SIZE \
     --env_rank PMI_RANK
