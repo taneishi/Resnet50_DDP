@@ -8,7 +8,7 @@ import os
 
 def train(train_loader, net, criterion, optimizer):
     net.train()
-    for batch_idx, (data, target) in enumerate(train_loader):
+    for data, target in train_loader:
         optimizer.zero_grad()
         output = net(data)
         loss = criterion(output, target)
@@ -34,6 +34,8 @@ def test(test_loader, net, criterion, optimizer):
 def main(args):
     world_size = int(os.environ[args.env_size]) if args.env_size in os.environ else 1
     local_rank = int(os.environ[args.env_rank]) if args.env_rank in os.environ else 0
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     if local_rank == 0:
         print(vars(args))
@@ -65,6 +67,8 @@ def main(args):
     train_loader = Data.DataLoader(
             dataset=train_dataset,
             batch_size=args.batch_size,
+            num_workers=0,
+            pin_memory=True,
             sampler=sampler_train)
 
     test_dataset = torchvision.datasets.CIFAR10(
@@ -79,11 +83,15 @@ def main(args):
     test_loader = Data.DataLoader(
             dataset=test_dataset,
             batch_size=args.batch_size,
+            num_workers=0,
+            pin_memory=True,
             sampler=sampler_test)
 
     net = torchvision.models.resnet50()
     if world_size > 1:
         net = torch.nn.parallel.DistributedDataParallel(net)
+    net = net.to(device)
+
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(net.parameters(), lr = args.lr, momentum=0.9)
 
